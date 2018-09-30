@@ -1,12 +1,17 @@
 ---
 title: "CaseStudy1"
-author: "Max Moro"
+author: "James Jarding, Nikhil Gupta, Max Moro, "
 date: "September 29, 2018"
-output: html_document
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    toc_float: true
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
 library(DT)
 library(tidyverse)
 library(ggplot2)
