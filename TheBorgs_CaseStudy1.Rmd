@@ -21,8 +21,8 @@ library(scales)
 ```
 
 ```{r}
-beers = read.csv('Beers.csv')
-breweries = read.csv('Breweries.csv')
+beers = read.csv('data/Beers.csv')
+breweries = read.csv('data/Breweries.csv')
 ```
 
 # Question 1
