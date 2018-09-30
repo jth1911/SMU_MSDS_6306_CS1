@@ -1,0 +1,130 @@
+---
+title: "CaseStudy1"
+author: "Max Moro"
+date: "September 29, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(DT)
+library(tidyverse)
+library(ggplot2)
+library(htmltools)
+library(knitr)
+library(scales)
+```
+
+```{r}
+beers = read.csv('Beers.csv')
+breweries = read.csv('Breweries.csv')
+```
+
+# Question 1
+
+How many breweries are present in each state?
+
+```{r}
+breweriesState = breweries %>%
+  group_by(State) %>%
+  summarise(Breweries = n()) %>%
+  ungroup()
+
+DT::datatable(breweriesState,rownames = F)
+```
+
+
+# Question 2
+
+Merge beer data with the breweries data. Print the first 6 observations and the last six observations to check the merged file
+
+```{r}
+data = merge(beers,breweries,by.x='Brewery_id',by.y='Brew_ID',all=T) 
+
+h4('First 6 Observations')
+DT::datatable(head(data,6))
+
+h4('Last 6 Observations')
+DT::datatable(tail(data,6))
+```
+
+
+# Question 3
+
+Report the number of NA's in each column
+
+```{r}
+countNA = sapply(data,function(x){sum(is.na(x))})
+kable(countNA,col.names='Count of NA')
+```
+# Question 4
+
+Compute the median alcohol content and international bitterness unit for each state. Plot a bar chart to compare
+
+```{r fig.height=7, warning=FALSE}
+
+summary = data %>%
+  group_by(State) %>%
+  summarise(ABVMedian = median(ABV,na.rm=T)
+            ,IBUMedian = median(IBU,na.rm=T)
+            ) %>%
+  ungroup() 
+
+ggplot(data=filter(summary,!is.na(ABVMedian))
+       ,aes(x=fct_reorder(State,ABVMedian,desc=T)
+                        ,y=ABVMedian)) +
+  geom_col() +
+  xlab("State") +
+  ylab("Median Alcohol Content") +
+  scale_y_continuous(labels=percent)+
+  coord_flip()
+
+ggplot(data=filter(summary,!is.na(IBUMedian))
+       ,aes(x=fct_reorder(State,IBUMedian,desc=T)
+                        ,y=IBUMedian)) +
+  geom_col() +
+  xlab("State") +
+  ylab("Median International Bitterness Unit") +
+  coord_flip()
+
+```
+
+
+# Question 5
+
+Which state has the maximum alcoholic (ABV) beer? Which state has the most bitter (IBU) beer?
+
+```{r}
+message("The State with the maximum alcoholic (ABV) beer is:"
+        ,arrange(data,desc(ABV))$State[1]
+        )
+
+message("The State with the most bitter (IBU) beer is:"
+        ,arrange(data,desc(IBU))$State[1]
+        )
+```
+
+# Question 6
+
+Summary statistics for the ABV variable:
+
+```{r}
+summary(data$ABV)
+```
+
+# Question 7
+
+Is there an apparent relationship between the bitterness of the beer and its alcoholic content? Draw a scatter plot.
+
+```{r warning=FALSE}
+ggplot(data=data,aes(x=IBU,y=ABV))+
+  geom_point() +
+  geom_smooth(method='lm') +
+  scale_y_continuous(labels=percent)
+
+model=lm(data=data,formula=ABV~IBU)
+model
+```
+
+We have a very slight positive correlation between ABV and IBU, with a coefficient of `r round(model$coefficients[[2]]*100,digits=3)` of increase % Alcohol per IBU point
+
