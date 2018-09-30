@@ -47,24 +47,10 @@ Merge beer data with the breweries data. Print the first 6 observations and the 
 data = merge(beers,breweries,by.x='Brewery_id',by.y='Brew_ID',all=T) 
 
 h4('First 6 Observations')
-DT::datatable(head(data,6)
-              ,rownames = F
-              ,options=list(scrollX=T
-                            ,autoWidth = TRUE #allow custom width
-                            ,columnDefs = list(list(width = '100px', targets = c(1))  #width for beer name
-                                               ,list(width = '150px', targets = c(5,7)) #width for style and brewer
-                            )
-              ))
+DT::datatable(head(data,6),rownames = F)
 
 h4('Last 6 Observations')
-DT::datatable(tail(data,6)
-              ,rownames = F
-              ,options=list(scrollX=T
-                            ,autoWidth = TRUE #allow custom width
-                            ,columnDefs = list(list(width = '100px', targets = c(1))  #width for beer name
-                                               ,list(width = '150px', targets = c(5,7)) #width for style and brewer
-                            )
-              ))
+DT::datatable(tail(data,6),rownames = F)
 ```
 
 
