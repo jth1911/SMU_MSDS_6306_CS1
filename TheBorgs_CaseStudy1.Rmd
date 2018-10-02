@@ -62,6 +62,7 @@ Report the number of NA's in each column
 countNA = sapply(data,function(x){sum(is.na(x))})
 kable(countNA,col.names='Count of NA')
 ```
+
 # Question 4
 
 Compute the median alcohol content and international bitterness unit for each state. Plot a bar chart to compare
