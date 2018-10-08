@@ -18,11 +18,20 @@ library(ggplot2)
 library(htmltools)
 library(knitr)
 library(scales)
+
+# For maps
+library(maps)
+library(geojsonio)
+library(leaflet)
+library(plotly)
 ```
 
 ```{r}
 beers = read.csv('data/Beers.csv')
 breweries = read.csv('data/Breweries.csv')
+
+str(beers)
+str(breweries)
 ```
 
 # Question 1
@@ -30,13 +39,101 @@ breweries = read.csv('data/Breweries.csv')
 How many breweries are present in each state?
 
 ```{r}
-breweriesState = breweries %>%
-  group_by(State) %>%
-  summarise(Breweries = n()) %>%
-  ungroup()
+# Option 1
+# breweriesState = breweries %>%
+#   group_by(State) %>%
+#   summarise(Breweries = n()) %>%
+#   ungroup()
 
+breweriesState = breweries %>% count(State) # Option 2
 DT::datatable(breweriesState,rownames = F)
 ```
+
+```{r Not Working Yet, eval=FALSE, include=FALSE}
+# plot_usmap(data = breweriesState, values = "Breweries", lines = "red") +
+#   scale_fill_continuous(name = "Breweries", label = scales::comma) +
+#   theme(legend.position = "right")
+
+```
+
+```{r Leaflet Map}
+str(breweriesState)
+
+# https://rstudio.github.io/leaflet/map_widget.html
+mapStates = map("state", fill = TRUE, plot = FALSE)
+str(mapStates)
+mapStates$names 
+# This will not work becasue of the way states are defined; would need major rework
+# example state names are "Arizona", but we have "AZ" in out dataframe. 
+# Also, some states are named "michigan:north", "michigan:south", etc.
+
+# Anyway adding some examples here in case we want to explore this further
+leaflet(data = mapStates) %>% addTiles() %>%
+  addPolygons(fillColor = topo.colors(10, alpha = NULL), stroke = FALSE)
+
+m = leaflet() %>% addTiles()
+df = data.frame(
+  lat = rnorm(100),
+  lng = rnorm(100),
+  size = runif(100, 5, 20),
+  color = sample(colors(), 100)
+)
+m = leaflet(df) %>% addTiles()
+m %>% addCircleMarkers(radius = ~size, color = ~color, fill = FALSE)
+m %>% addCircleMarkers(radius = runif(100, 4, 10), color = c('red'))
+
+```
+
+```{r Leaflet another option}
+states <- geojsonio::geojson_read("http://eric.clst.org/assets/wiki/uploads/Stuff/gz_2010_us_outline_20m.json", what = "sp")
+class(states)
+names(states)
+#head(states)
+
+# Not sure yet if I need to get a special token for this.
+# Below code is only plotting the boundary of US, not the states
+# We can also try with other JSON files. They are available in the same link path as above.
+m <- leaflet(states) %>%
+  setView(-96, 37.8, 4) %>%
+  addProviderTiles("MapBox", options = providerTileOptions(
+    id = "mapbox.light",
+    accessToken = Sys.getenv('MAPBOX_ACCESS_TOKEN'))) 
+
+m %>% addPolygons()
+```
+
+
+```{r Plotly Map Example on Website not working}
+# https://plot.ly/r/choropleth-maps/
+df <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/2011_us_ag_exports.csv")
+df$hover <- with(df, paste(state, '<br>', "Beef", beef, "Dairy", dairy, "<br>",
+                           "Fruits", total.fruits, "Veggies", total.veggies,
+                           "<br>", "Wheat", wheat, "Corn", corn))
+# give state boundaries a white border
+l <- list(color = toRGB("white"), width = 2)
+# specify some map projection/options
+g <- list(
+  scope = 'usa',
+  projection = list(type = 'albers usa'),
+  showlakes = TRUE,
+  lakecolor = toRGB('white')
+)
+
+p <- plot_geo(df, locationmode = 'USA-states') %>%
+  add_trace(
+    z = ~total.exports, text = ~hover, locations = ~code,
+    color = ~total.exports, colors = 'Purples'
+  ) %>%
+  colorbar(title = "Millions USD") %>%
+  layout(
+    title = '2011 US Agriculture Exports by State<br>(Hover for breakdown)',
+    geo = g
+  )
+p
+
+```
+
+
 
 
 # Question 2
