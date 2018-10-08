@@ -32,6 +32,17 @@ breweries = read.csv('data/Breweries.csv')
 
 str(beers)
 str(breweries)
+
+# Both dataframes have column called 'Name'.
+# In beers, it refers to the name of the beer
+# In breweries, it refers to the name of the breweries.
+# Let's rename for clarity, especially after merging.
+
+names(beers)[names(beers) %in% 'Name'] <- 'Beer'
+names(breweries)[names(breweries) %in% 'Name'] <- 'Brewery'
+
+str(beers)
+str(breweries)
 ```
 
 # Question 1
@@ -172,6 +183,29 @@ summary = data %>%
             ,IBUMedian = median(IBU,na.rm=T)
             ) %>%
   ungroup() 
+
+summary(summary)
+
+# Question: Why do we need ungroup()? The code below works just fine without ungroup()
+summary = data %>%
+  group_by(State) %>%
+  summarise(ABVMedian = median(ABV,na.rm=T) 
+            ,IBUMedian = median(IBU,na.rm=T)
+            ) 
+  
+summary(summary)
+
+# There is an NA value. Which one is it?
+summary[rowSums(is.na(summary)) > 0,]
+
+# SD has NA values for IBUMedian; need to remove before plotting
+# Why does SD have NA values even though we removed NA values when we calculated median?
+# Reason: na.rm will remove NA values before applying median function. However, if a state has all NA values 
+# for a field (for example SD has all NA value for IBU), the summarize will add a NA value for that State
+
+trim <- function (x) gsub("^\\s+|\\s+$", "", x)
+data$State <- trim(data$State)
+data[data$State == 'SD', ]
 
 ggplot(data=filter(summary,!is.na(ABVMedian))
        ,aes(x=fct_reorder(State,ABVMedian,desc=T)
