@@ -22,6 +22,15 @@ library(scales)
 # For maps
 library(geojsonio)
 library(leaflet)
+library(datasets)
+#dataframe about states
+dfStates=data.frame(name=state.name,abb=state.abb)
+#getting states maps
+states <- geojsonio::geojson_read("data/us-states.json", what = "sp")
+#addint state id
+states@data = states@data %>% inner_join(dfStates,by='name') 
+
+
 ```
 
 We are here because of our love for Star Trek and beer.  Who would have ever imagined we would get tired of the typical draft beer and decide to brew our on own beer.  It started out as a small group competition that resulted in us picking a few brews, purchasing a building to meet and finally a full blown brewery that attracks not just Star Wars fans but fans of science fiction in general.  The Borg has assimilated 10 different draft beers and 2 seasonal beers.  
@@ -74,31 +83,17 @@ Where should we avoid making strong assumptions?
 - Bottom 10 States: DC, ND, SD, WV, AR, DE, MS, NV, AL, KS
 
 
-```{r Leaflet_Map}
-library(datasets)
-#dataframe about states
-dfStates=data.frame(name=state.name,abb=state.abb)
+## Map of States and Breweries 
 
-#stats map
-statesData <- geojsonio::geojson_read("data/us-states.json", what = "sp")
-message(class(statesData))
-
-#we need to get the state name 
-df = breweriesState %>% inner_join(dfStates,by=c('State'='abb')) %>%
-  mutate(n = ifelse(is.na(n),0,n))
-
+```{r Leaflet_Map_Count}
 #adding the count columns to the states spatial data
-states=statesData
-states@data  = states@data %>% left_join(df,by='name')
+states@data  = states@data %>% left_join(breweriesState,by=c('abb'='State'))
 
 #states=statesData
 bins <- c(0, 5, 10, 15, 20, 30,Inf)
 pal <- colorBin("YlOrRd", domain = states$n, bins = bins)
 
-labels <- sprintf(
-  "<strong>%s</strong><br/>%g Breweries",
-  states$name, states$n
-) %>% lapply(htmltools::HTML)
+labels <- sprintf("<strong>%s</strong><br/>%g Breweries",states$name, states$n) %>% lapply(htmltools::HTML)
 
 leaflet(states) %>%
   setView(-96, 37.8, 4) %>%
@@ -129,7 +124,7 @@ leaflet(states) %>%
 ```
 
 
-# Question 2
+# Top and Bottom Rows
 
 Merge beer data with the breweries data. Print the first 6 observations and the last six observations to check the merged file
 
@@ -144,7 +139,7 @@ DT::datatable(tail(data,6),rownames = F)
 ```
 
 
-# Question 3
+# NAs in the data
 
 Report the number of NA's in each column
 
@@ -153,7 +148,7 @@ countNA = sapply(data,function(x){sum(is.na(x))})
 kable(countNA,col.names='Count of NA')
 ```
 
-# Question 4
+# ABV and IBU
 
 Compute the median alcohol content and international bitterness unit for each state. Plot a bar chart to compare
 
@@ -209,7 +204,7 @@ ggplot(data=filter(summary,!is.na(IBUMedian))
 ```
 
 
-# Question 5
+# State with maximum ABV
 
 Which state has the maximum alcoholic (ABV) beer? Which state has the most bitter (IBU) beer?
 
@@ -223,7 +218,92 @@ message("The State with the most bitter (IBU) beer is:"
         )
 ```
 
-# Question 6
+
+## Map of States and their max ABV
+
+```{r get data for Maps}
+statesABV_IBU=data %>%
+  group_by(abb=State) %>%
+  summarise(MaxABV= max(ABV,na.rm=T)
+            ,MaxIBU = max(IBU,na.rm=T))  %>%
+  ungroup()
+#stats map
+states@data  = states@data %>% left_join(statesABV_IBU,by='abb')
+```
+
+```{r Leaflet_Map_ABC}
+#states=statesData
+bins <- c(0.05, 0.07, 0.09, 0.10,Inf)
+pal <- colorBin("YlOrRd", domain = states$MaxABV, bins = bins)
+
+labels <- sprintf("<strong>%s</strong><br/>%g Max ABV",states$name, states$MaxABV) %>% lapply(htmltools::HTML)
+
+leaflet(states) %>%
+  setView(-96, 37.8, 4) %>%
+  addProviderTiles("MapBox", options = providerTileOptions(
+    id = "mapbox.light",
+    accessToken = Sys.getenv('MAPBOX_ACCESS_TOKEN'))) %>%
+  addPolygons(
+    fillColor = ~pal(MaxABV),
+    weight = 2,
+    opacity = 1,
+    color = "white",
+    dashArray = "3",
+    fillOpacity = 0.7,
+    highlight = highlightOptions(
+      weight = 5,
+      color = "#666",
+      dashArray = "",
+      fillOpacity = 0.7,
+      bringToFront = TRUE),
+    label = labels,
+    labelOptions = labelOptions(
+      style = list("font-weight" = "normal", padding = "3px 8px"),
+      textsize = "15px",
+      direction = "auto")) %>%
+  addLegend(pal = pal, values = ~density, opacity = 0.7,
+            position = "bottomright", title='Max ABV per State')
+
+```
+
+## Map of States and their max IBU
+
+```{r Leaflet_Map_IBU}
+#states=statesData
+bins <- c(50,70,90,110,Inf)
+pal <- colorBin("YlOrRd", domain = states$MaxIBU, bins = bins)
+
+labels <- sprintf("<strong>%s</strong><br/>%g Max IBU",states$name, states$MaxIBU) %>% lapply(htmltools::HTML)
+
+leaflet(states) %>%
+  setView(-96, 37.8, 4) %>%
+  addProviderTiles("MapBox", options = providerTileOptions(
+    id = "mapbox.light",
+    accessToken = Sys.getenv('MAPBOX_ACCESS_TOKEN'))) %>%
+  addPolygons(
+    fillColor = ~pal(MaxIBU),
+    weight = 2,
+    opacity = 1,
+    color = "white",
+    dashArray = "3",
+    fillOpacity = 0.7,
+    highlight = highlightOptions(
+      weight = 5,
+      color = "#666",
+      dashArray = "",
+      fillOpacity = 0.7,
+      bringToFront = TRUE),
+    label = labels,
+    labelOptions = labelOptions(
+      style = list("font-weight" = "normal", padding = "3px 8px"),
+      textsize = "15px",
+      direction = "auto")) %>%
+  addLegend(pal = pal, values = ~density, opacity = 0.7,
+            position = "bottomright", title='Max ABV per State')
+
+```
+
+# ABV summary
 
 Summary statistics for the ABV variable:
 
@@ -231,7 +311,7 @@ Summary statistics for the ABV variable:
 summary(data$ABV)
 ```
 
-# Question 7
+# Relationship between IBU and ABV
 
 Is there an apparent relationship between the bitterness of the beer and its alcoholic content? Draw a scatter plot.
 
