@@ -30,7 +30,7 @@ Last month, the talk of selling our brew to other breweries caught fire.  We sat
 
 # Breweries by State
 
-First, lets take a look at the data we have.  
+First, lets take a look at the data we have.  Keep in mind, this isn't an exhaustive list of breweries but just a sample by state. If we had an exhaustive list of breweries just imagine the decisions we;ll be able to safely make.  
 
 ```{r}
 beers = read.csv('data/Beers.csv')
@@ -129,7 +129,7 @@ leaflet(states) %>%
 ```
 
 
-# Question 2
+# Merge beer w/breweries
 
 Merge beer data with the breweries data. Print the first 6 observations and the last six observations to check the merged file
 
@@ -144,7 +144,7 @@ DT::datatable(tail(data,6),rownames = F)
 ```
 
 
-# Question 3
+# Data Cleanliness Check
 
 Report the number of NA's in each column
 
@@ -153,7 +153,7 @@ countNA = sapply(data,function(x){sum(is.na(x))})
 kable(countNA,col.names='Count of NA')
 ```
 
-# Question 4
+# Alcohol Content and Bitterness
 
 Compute the median alcohol content and international bitterness unit for each state. Plot a bar chart to compare
 
@@ -209,7 +209,7 @@ ggplot(data=filter(summary,!is.na(IBUMedian))
 ```
 
 
-# Question 5
+# Max Alcohol Content and Bitterness
 
 Which state has the maximum alcoholic (ABV) beer? Which state has the most bitter (IBU) beer?
 
@@ -223,7 +223,7 @@ message("The State with the most bitter (IBU) beer is:"
         )
 ```
 
-# Question 6
+# Summarize ABV Variable
 
 Summary statistics for the ABV variable:
 
@@ -231,7 +231,7 @@ Summary statistics for the ABV variable:
 summary(data$ABV)
 ```
 
-# Question 7
+# ABV / Bitterness Relationship
 
 Is there an apparent relationship between the bitterness of the beer and its alcoholic content? Draw a scatter plot.
 
