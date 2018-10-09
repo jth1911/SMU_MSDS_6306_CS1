@@ -1,5 +1,5 @@
 ---
-title: "CaseStudy1"
+title: "Expansion: The Borg Brewery"
 author: "James Jarding, Nikhil Gupta, Max Moro"
 date: "September 29, 2018"
 output:
@@ -26,6 +26,16 @@ library(leaflet)
 library(plotly)
 ```
 
+# Expansion: The Borg Brewery
+
+We are here because of our love for Star Wars and beer.  Who would have ever imagined we would get tired of the typical draft beer and decide to brew our on own beer.  It started out as a small group competition that resulted in us picking a few brews, purchasing a building to meet and finally a full blown brewery that attracks not just Star Wars fans but fans of science fiction in general.  We now have 10 different draft beers and 2 seasonal beers.  
+
+Last month, the talk of selling our brew to other breweries caught fire.  We sat around brainstorming and really getting to know where.  Way too many ideas were thrown on the table and most were not based on any research.  In an attempt to further the discussion, we (James, Max and Nikhil) decided to do some research hoping to channel our discussion around factual data to best of our knowledge.  The data we have collected contains a sample of brewries by city/state and the desired taste by state.  This will help to narrow our focus to areas where beer is seen as a necessity and a strong opinion as to the desired taste.  
+
+# Breweries by State
+
+First, lets take a look at the data we have.  
+
 ```{r}
 beers = read.csv('data/Beers.csv')
 breweries = read.csv('data/Breweries.csv')
@@ -45,9 +55,9 @@ str(beers)
 str(breweries)
 ```
 
-# Question 1
 
-How many breweries are present in each state?
+## How many breweries are present in each state?
+
 
 ```{r}
 # Option 1
@@ -59,6 +69,13 @@ How many breweries are present in each state?
 breweriesState = breweries %>% count(State) # Option 2
 DT::datatable(breweriesState,rownames = F)
 ```
+
+Where can we focus our research?
+- Top 10 States: CO, CA, MI, OR, TX, PA, MA, WA, IN, WI
+
+Where should we avoid making strong assumptions?
+- Bottom 10 States: DC, ND, SD, WV, AR, DE, MS, NV, AL, KS
+
 
 ```{r Not Working Yet, eval=FALSE, include=FALSE}
 # plot_usmap(data = breweriesState, values = "Breweries", lines = "red") +
@@ -143,8 +160,6 @@ p <- plot_geo(df, locationmode = 'USA-states') %>%
 p
 
 ```
-
-
 
 
 # Question 2
