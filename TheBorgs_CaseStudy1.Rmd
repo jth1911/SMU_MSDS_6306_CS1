@@ -26,9 +26,7 @@ library(leaflet)
 library(plotly)
 ```
 
-# Expansion: The Borg Brewery
-
-We are here because of our love for Star Wars and beer.  Who would have ever imagined we would get tired of the typical draft beer and decide to brew our on own beer.  It started out as a small group competition that resulted in us picking a few brews, purchasing a building to meet and finally a full blown brewery that attracks not just Star Wars fans but fans of science fiction in general.  We now have 10 different draft beers and 2 seasonal beers.  
+We are here because of our love for Star Trek and beer.  Who would have ever imagined we would get tired of the typical draft beer and decide to brew our on own beer.  It started out as a small group competition that resulted in us picking a few brews, purchasing a building to meet and finally a full blown brewery that attracks not just Star Wars fans but fans of science fiction in general.  The Borg has assimilated 10 different draft beers and 2 seasonal beers.  
 
 Last month, the talk of selling our brew to other breweries caught fire.  We sat around brainstorming and really getting to know where.  Way too many ideas were thrown on the table and most were not based on any research.  In an attempt to further the discussion, we (James, Max and Nikhil) decided to do some research hoping to channel our discussion around factual data to best of our knowledge.  The data we have collected contains a sample of brewries by city/state and the desired taste by state.  This will help to narrow our focus to areas where beer is seen as a necessity and a strong opinion as to the desired taste.  
 
