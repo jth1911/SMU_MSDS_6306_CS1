@@ -20,10 +20,8 @@ library(knitr)
 library(scales)
 
 # For maps
-library(maps)
 library(geojsonio)
 library(leaflet)
-library(plotly)
 ```
 
 We are here because of our love for Star Trek and beer.  Who would have ever imagined we would get tired of the typical draft beer and decide to brew our on own beer.  It started out as a small group competition that resulted in us picking a few brews, purchasing a building to meet and finally a full blown brewery that attracks not just Star Wars fans but fans of science fiction in general.  The Borg has assimilated 10 different draft beers and 2 seasonal beers.  
@@ -36,7 +34,8 @@ First, lets take a look at the data we have.
 
 ```{r}
 beers = read.csv('data/Beers.csv')
-breweries = read.csv('data/Breweries.csv')
+breweries = read.csv('data/Breweries.csv') %>%
+  mutate(State = trimws(State,'both'))
 
 str(beers)
 str(breweries)
@@ -75,87 +74,57 @@ Where should we avoid making strong assumptions?
 - Bottom 10 States: DC, ND, SD, WV, AR, DE, MS, NV, AL, KS
 
 
-```{r Not Working Yet, eval=FALSE, include=FALSE}
-# plot_usmap(data = breweriesState, values = "Breweries", lines = "red") +
-#   scale_fill_continuous(name = "Breweries", label = scales::comma) +
-#   theme(legend.position = "right")
+```{r Leaflet_Map}
+library(datasets)
+#dataframe about states
+dfStates=data.frame(name=state.name,abb=state.abb)
 
-```
+#stats map
+statesData <- geojsonio::geojson_read("data/us-states.json", what = "sp")
+message(class(statesData))
 
-```{r Leaflet Map}
-str(breweriesState)
+#we need to get the state name 
+df = breweriesState %>% inner_join(dfStates,by=c('State'='abb')) %>%
+  mutate(n = ifelse(is.na(n),0,n))
 
-# https://rstudio.github.io/leaflet/map_widget.html
-mapStates = map("state", fill = TRUE, plot = FALSE)
-str(mapStates)
-mapStates$names 
-# This will not work becasue of the way states are defined; would need major rework
-# example state names are "Arizona", but we have "AZ" in out dataframe. 
-# Also, some states are named "michigan:north", "michigan:south", etc.
+#adding the count columns to the states spatial data
+states=statesData
+states@data  = states@data %>% left_join(df,by='name')
 
-# Anyway adding some examples here in case we want to explore this further
-leaflet(data = mapStates) %>% addTiles() %>%
-  addPolygons(fillColor = topo.colors(10, alpha = NULL), stroke = FALSE)
+#states=statesData
+bins <- c(0, 5, 10, 15, 20, 30,Inf)
+pal <- colorBin("YlOrRd", domain = states$n, bins = bins)
 
-m = leaflet() %>% addTiles()
-df = data.frame(
-  lat = rnorm(100),
-  lng = rnorm(100),
-  size = runif(100, 5, 20),
-  color = sample(colors(), 100)
-)
-m = leaflet(df) %>% addTiles()
-m %>% addCircleMarkers(radius = ~size, color = ~color, fill = FALSE)
-m %>% addCircleMarkers(radius = runif(100, 4, 10), color = c('red'))
+labels <- sprintf(
+  "<strong>%s</strong><br/>%g Breweries",
+  states$name, states$n
+) %>% lapply(htmltools::HTML)
 
-```
-
-```{r Leaflet another option}
-states <- geojsonio::geojson_read("http://eric.clst.org/assets/wiki/uploads/Stuff/gz_2010_us_outline_20m.json", what = "sp")
-class(states)
-names(states)
-#head(states)
-
-# Not sure yet if I need to get a special token for this.
-# Below code is only plotting the boundary of US, not the states
-# We can also try with other JSON files. They are available in the same link path as above.
-m <- leaflet(states) %>%
+leaflet(states) %>%
   setView(-96, 37.8, 4) %>%
   addProviderTiles("MapBox", options = providerTileOptions(
     id = "mapbox.light",
-    accessToken = Sys.getenv('MAPBOX_ACCESS_TOKEN'))) 
-
-m %>% addPolygons()
-```
-
-
-```{r Plotly Map Example on Website not working}
-# https://plot.ly/r/choropleth-maps/
-df <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/2011_us_ag_exports.csv")
-df$hover <- with(df, paste(state, '<br>', "Beef", beef, "Dairy", dairy, "<br>",
-                           "Fruits", total.fruits, "Veggies", total.veggies,
-                           "<br>", "Wheat", wheat, "Corn", corn))
-# give state boundaries a white border
-l <- list(color = toRGB("white"), width = 2)
-# specify some map projection/options
-g <- list(
-  scope = 'usa',
-  projection = list(type = 'albers usa'),
-  showlakes = TRUE,
-  lakecolor = toRGB('white')
-)
-
-p <- plot_geo(df, locationmode = 'USA-states') %>%
-  add_trace(
-    z = ~total.exports, text = ~hover, locations = ~code,
-    color = ~total.exports, colors = 'Purples'
-  ) %>%
-  colorbar(title = "Millions USD") %>%
-  layout(
-    title = '2011 US Agriculture Exports by State<br>(Hover for breakdown)',
-    geo = g
-  )
-p
+    accessToken = Sys.getenv('MAPBOX_ACCESS_TOKEN'))) %>%
+  addPolygons(
+    fillColor = ~pal(n),
+    weight = 2,
+    opacity = 1,
+    color = "white",
+    dashArray = "3",
+    fillOpacity = 0.7,
+    highlight = highlightOptions(
+      weight = 5,
+      color = "#666",
+      dashArray = "",
+      fillOpacity = 0.7,
+      bringToFront = TRUE),
+    label = labels,
+    labelOptions = labelOptions(
+      style = list("font-weight" = "normal", padding = "3px 8px"),
+      textsize = "15px",
+      direction = "auto")) %>%
+  addLegend(pal = pal, values = ~density, opacity = 0.7,
+            position = "bottomright", title='Breweries per State')
 
 ```
 
