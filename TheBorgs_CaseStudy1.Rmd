@@ -111,7 +111,7 @@ leaflet(states) %>%
       style = list("font-weight" = "normal", padding = "3px 8px"),
       textsize = "15px",
       direction = "auto")) %>%
-  addLegend(pal = pal, values = ~density, opacity = 0.7,
+  addLegend(pal = pal, values = ~n, opacity = 0.7,
             position = "bottomright", title='Breweries per State')
 
 ```
@@ -253,7 +253,7 @@ leaflet(states) %>%
       style = list("font-weight" = "normal", padding = "3px 8px"),
       textsize = "15px",
       direction = "auto")) %>%
-  addLegend(pal = pal, values = ~density, opacity = 0.7,
+  addLegend(pal = pal, values = ~MaxABV, opacity = 0.7,
             position = "bottomright", title='Max ABV per State')
 
 ```
@@ -289,7 +289,7 @@ leaflet(states) %>%
       style = list("font-weight" = "normal", padding = "3px 8px"),
       textsize = "15px",
       direction = "auto")) %>%
-  addLegend(pal = pal, values = ~density, opacity = 0.7,
+  addLegend(pal = pal, values = ~MaxIBU, opacity = 0.7,
             position = "bottomright", title='Max ABV per State')
 
 ```
