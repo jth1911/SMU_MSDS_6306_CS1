@@ -39,12 +39,12 @@ Last month, the talk of selling our brew to other breweries caught fire.  We sat
 
 # Breweries by State
 
-First, lets take a look at the data we have.  
+First, lets take a look at the data we have.  Keep in mind, this isn't an exhaustive list of breweries but just a sample by state. If we had an exhaustive list of breweries just imagine the decisions we;ll be able to safely make.  
 
 ```{r}
 beers = read.csv('data/Beers.csv')
 breweries = read.csv('data/Breweries.csv') %>%
-  mutate(State = trimws(State,'both'))
+  mutate(State = trimws(State,'both')) #removing trailing spaces
 
 str(beers)
 str(breweries)
@@ -66,13 +66,7 @@ str(breweries)
 
 
 ```{r}
-# Option 1
-# breweriesState = breweries %>%
-#   group_by(State) %>%
-#   summarise(Breweries = n()) %>%
-#   ungroup()
-
-breweriesState = breweries %>% count(State) # Option 2
+breweriesState = breweries %>% count(State) # Option 2 . This is better! 
 DT::datatable(breweriesState,rownames = F)
 ```
 
@@ -89,7 +83,6 @@ Where should we avoid making strong assumptions?
 #adding the count columns to the states spatial data
 states@data  = states@data %>% left_join(breweriesState,by=c('abb'='State'))
 
-#states=statesData
 bins <- c(0, 5, 10, 15, 20, 30,Inf)
 pal <- colorBin("YlOrRd", domain = states$n, bins = bins)
 
@@ -123,8 +116,7 @@ leaflet(states) %>%
 
 ```
 
-
-# Top and Bottom Rows
+# Merge beer w/breweries
 
 Merge beer data with the breweries data. Print the first 6 observations and the last six observations to check the merged file
 
@@ -139,7 +131,7 @@ DT::datatable(tail(data,6),rownames = F)
 ```
 
 
-# NAs in the data
+# Data Cleanliness Check
 
 Report the number of NA's in each column
 
@@ -148,7 +140,7 @@ countNA = sapply(data,function(x){sum(is.na(x))})
 kable(countNA,col.names='Count of NA')
 ```
 
-# ABV and IBU
+# Alcohol Content and Bitterness
 
 Compute the median alcohol content and international bitterness unit for each state. Plot a bar chart to compare
 
@@ -180,8 +172,9 @@ summary[rowSums(is.na(summary)) > 0,]
 # Reason: na.rm will remove NA values before applying median function. However, if a state has all NA values 
 # for a field (for example SD has all NA value for IBU), the summarize will add a NA value for that State
 
-trim <- function (x) gsub("^\\s+|\\s+$", "", x)
-data$State <- trim(data$State)
+# no need for trim function.. we can use trimws function... I added at the top as is better to clean the data before doing the work
+# trim <- function (x) gsub("^\\s+|\\s+$", "", x)
+# data$State <- trim(data$State)
 data[data$State == 'SD', ]
 
 ggplot(data=filter(summary,!is.na(ABVMedian))
@@ -204,7 +197,7 @@ ggplot(data=filter(summary,!is.na(IBUMedian))
 ```
 
 
-# State with maximum ABV
+# Max Alcohol Content and Bitterness
 
 Which state has the maximum alcoholic (ABV) beer? Which state has the most bitter (IBU) beer?
 
@@ -218,21 +211,20 @@ message("The State with the most bitter (IBU) beer is:"
         )
 ```
 
-
 ## Map of States and their max ABV
 
-```{r get data for Maps}
+```{r preparing_data}
+#calculating max abv and mav ibu
 statesABV_IBU=data %>%
   group_by(abb=State) %>%
   summarise(MaxABV= max(ABV,na.rm=T)
             ,MaxIBU = max(IBU,na.rm=T))  %>%
   ungroup()
-#stats map
+#adding to the states map data frame
 states@data  = states@data %>% left_join(statesABV_IBU,by='abb')
 ```
 
 ```{r Leaflet_Map_ABC}
-#states=statesData
 bins <- c(0.05, 0.07, 0.09, 0.10,Inf)
 pal <- colorBin("YlOrRd", domain = states$MaxABV, bins = bins)
 
@@ -269,8 +261,7 @@ leaflet(states) %>%
 ## Map of States and their max IBU
 
 ```{r Leaflet_Map_IBU}
-#states=statesData
-bins <- c(50,70,90,110,Inf)
+bins <- c(30,70,90,110,Inf)
 pal <- colorBin("YlOrRd", domain = states$MaxIBU, bins = bins)
 
 labels <- sprintf("<strong>%s</strong><br/>%g Max IBU",states$name, states$MaxIBU) %>% lapply(htmltools::HTML)
@@ -303,7 +294,7 @@ leaflet(states) %>%
 
 ```
 
-# ABV summary
+# Summarize ABV Variable
 
 Summary statistics for the ABV variable:
 
@@ -311,7 +302,7 @@ Summary statistics for the ABV variable:
 summary(data$ABV)
 ```
 
-# Relationship between IBU and ABV
+# ABV / Bitterness Relationship
 
 Is there an apparent relationship between the bitterness of the beer and its alcoholic content? Draw a scatter plot.
 
