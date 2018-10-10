@@ -34,9 +34,9 @@ dfStates=data.frame(name=state.name,abb=state.abb) %>%
 
 #getting states maps
 states <- geojsonio::geojson_read("data/us-states.json", what = "sp")
-#addint state id
-states@data = states@data %>% inner_join(dfStates,by='name') 
 
+#adding state id
+states=sp::merge(states,dfStates,by='name',all.x=T)
 
 ```
 
@@ -88,7 +88,7 @@ Where should we avoid making strong assumptions?
 
 ```{r Leaflet_Map_Count}
 #adding the count columns to the states spatial data
-states@data  = states@data %>% left_join(breweriesState,by=c('abb'='State'))
+states = sp::merge(states,breweriesState,by.x='abb',by.y='State')
 
 bins <- c(0, 5, 10, 15, 20, 30,Inf)
 pal <- colorBin("YlOrRd", domain = states$n, bins = bins)
@@ -228,7 +228,7 @@ statesABV_IBU=data %>%
             ,MaxIBU = max(IBU,na.rm=T))  %>%
   ungroup()
 #adding to the states map data frame
-states@data  = states@data %>% left_join(statesABV_IBU,by='abb')
+states = sp::merge(states,statesABV_IBU,by='abb',all.x=T)
 ```
 
 ```{r Leaflet_Map_ABC}
