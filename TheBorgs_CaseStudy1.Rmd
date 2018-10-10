@@ -23,8 +23,15 @@ library(scales)
 library(geojsonio)
 library(leaflet)
 library(datasets)
-#dataframe about states
-dfStates=data.frame(name=state.name,abb=state.abb)
+
+#loading current population estimates from Census.GOV
+#download.file('https://www2.census.gov/programs-surveys/popest/datasets/2010-2017/national/totals/nst-est2017-alldata.csv','data/census.csv')
+census = read.csv('data/census.csv') 
+
+#dataframe about states, merged with Population
+dfStates=data.frame(name=state.name,abb=state.abb) %>%
+  left_join(select(census,name=NAME,pop=POPESTIMATE2017),by='name')
+
 #getting states maps
 states <- geojsonio::geojson_read("data/us-states.json", what = "sp")
 #addint state id
@@ -317,4 +324,5 @@ model
 ```
 
 We have a very slight positive correlation between ABV and IBU, with a coefficient of `r round(model$coefficients[[2]]*100,digits=4)` of increase % Alcohol per IBU point
+
 
