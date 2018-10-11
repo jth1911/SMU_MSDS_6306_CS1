@@ -11,7 +11,6 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-
 library(DT)
 library(tidyverse)
 library(ggplot2)
@@ -167,12 +166,13 @@ summary = data %>%
   group_by(State) %>%
   summarise(ABVMedian = median(ABV,na.rm=T) 
             ,IBUMedian = median(IBU,na.rm=T)
-            ) 
+            )  %>%
+  ungroup()
   
 summary(summary)
 
 # There is an NA value. Which one is it?
-summary[rowSums(is.na(summary)) > 0,]
+# [rowSums(is.na(summary)) > 0,]
 
 # SD has NA values for IBUMedian; need to remove before plotting
 # Why does SD have NA values even though we removed NA values when we calculated median?
@@ -182,7 +182,7 @@ summary[rowSums(is.na(summary)) > 0,]
 # no need for trim function.. we can use trimws function... I added at the top as is better to clean the data before doing the work
 # trim <- function (x) gsub("^\\s+|\\s+$", "", x)
 # data$State <- trim(data$State)
-data[data$State == 'SD', ]
+# data[data$State == 'SD', ]
 
 ggplot(data=filter(summary,!is.na(ABVMedian))
        ,aes(x=fct_reorder(State,ABVMedian,desc=T)
