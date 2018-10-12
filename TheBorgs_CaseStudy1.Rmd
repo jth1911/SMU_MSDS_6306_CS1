@@ -312,7 +312,7 @@ leaflet(states) %>%
       textsize = "15px",
       direction = "auto")) %>%
   addLegend(pal = pal, values = ~MaxIBU, opacity = 0.7,
-            position = "bottomright", title='Max ABV per State')
+            position = "bottomright", title='Max IBU per State')
 
 ```
 
