@@ -39,7 +39,9 @@ states=sp::merge(states,dfStates,by='name',all.x=T)
 
 ```
 
-We are here because of our love for Star Trek and beer.  Who would have ever imagined we would get tired of the typical draft beer and decide to brew our on own beer.  It started out as a small group competition that resulted in us picking a few brews, purchasing a building to meet and finally a full blown brewery that attracks not just Star Wars fans but fans of science fiction in general.  The Borg has assimilated 10 different draft beers and 2 seasonal beers.  
+![](./img/beerborg-big.jpg)
+
+We are here because of our love for Star Trek and beer.  Who would have ever imagined we would get tired of the typical draft beer and decide to brew our on own beer.  It started out as a small group competition that resulted in us picking a few brews, purchasing a building to meet and finally a full blown brewery that attracks not just Star Wars fans but fans of science fiction in general.  The Borg has assimilated 10 different draft beers and 2 seasonal beers. 
 
 Last month, the talk of selling our brew to other breweries caught fire.  We sat around brainstorming and really getting to know where.  Way too many ideas were thrown on the table and most were not based on any research.  In an attempt to further the discussion, we (James, Max and Nikhil) decided to do some research hoping to channel our discussion around factual data to best of our knowledge.  The data we have collected contains a sample of brewries by city/state and the desired taste by state.  This will help to narrow our focus to areas where beer is seen as a necessity and a strong opinion as to the desired taste.  
 
@@ -76,12 +78,16 @@ breweriesState = breweries %>% count(State) # Option 2 . This is better!
 DT::datatable(breweriesState,rownames = F)
 ```
 
+
+With a more extensive data set we can begin to answer the following questions:
+
 Where can we focus our research?
+
 - Top 10 States: CO, CA, MI, OR, TX, PA, MA, WA, IN, WI
 
 Where should we avoid making strong assumptions?
-- Bottom 10 States: DC, ND, SD, WV, AR, DE, MS, NV, AL, KS
 
+- Bottom 10 States: DC, ND, SD, WV, AR, DE, MS, NV, AL, KS
 
 ## Map of States and Breweries 
 
@@ -122,6 +128,14 @@ leaflet(states) %>%
 
 ```
 
+A more visual representation shows the top 3 states:
+
+- Colorado - 47 breweries
+- California - 39 breweries
+- Michigan - 32 breweries
+
+If we're going to expand we should start our in depth research with these three states but first let's take a look at the types of beer that are popular in the these states.  
+
 # Merge beer w/breweries
 
 Merge beer data with the breweries data. Print the first 6 observations and the last six observations to check the merged file
@@ -136,15 +150,16 @@ h4('Last 6 Observations')
 DT::datatable(tail(data,6),rownames = F)
 ```
 
-
 # Data Cleanliness Check
 
-Report the number of NA's in each column
+Some of the data is incomplete.  A report of the number of NA's in each column should give us the severity.  
 
 ```{r}
 countNA = sapply(data,function(x){sum(is.na(x))})
 kable(countNA,col.names='Count of NA')
 ```
+
+With any data that we obtain, we'll need to verify it's completeness and take the proper corrective action to ensure we are not making decisions based on an inaccurate data set. 
 
 # Alcohol Content and Bitterness
 
