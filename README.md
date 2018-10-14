@@ -26,7 +26,7 @@ Follow data sources have been used:
 
 - **Breweries.csv**  dataset contains a list of 558 US  Breweries
 
-- **census.csv** dataset from [census.gov](https://www2.census.gov/programs-surveys/popest/datasets/2010-2017/national/totals/nst-est2017-alldata.csv) with estimated 2017 population count per each US State 
+- **[census.csv]** (https://www2.census.gov/programs-surveys/popest/datasets/2010-2017/national/totals/nst-est2017-alldata.csv) dataset from [census.gov](https://www.census.gov/data/tables/2017/demo/popest/nation-total.html) with estimated 2017 population count per each US State 
 
 - **us-states.json** spatial dataset contains coordinates and geographical shape of the US States.
 
