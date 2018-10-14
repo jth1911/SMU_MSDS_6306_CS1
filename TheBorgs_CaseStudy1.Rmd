@@ -43,7 +43,7 @@ states=sp::merge(states,dfStates,by='name',all.x=T)
 
 # Background
 
-We are here because of our love for Star Trek and beer.  Who would have ever imagined we would get tired of the typical draft beer and decide to brew our on own beer.  It started out as a small group competition that resulted in us picking a few brews, purchasing a building to meet and finally a full blown brewery that attracks not just Star Wars fans but fans of science fiction in general.  The Borg has assimilated 10 different draft beers and 2 seasonal beers. 
+We are here because of our love for Star Trek and beer.  Who would have ever imagined we would get tired of the typical draft beer and decide to brew our on own beer.  It started out as a small group competition that resulted in us picking a few brews, purchasing a building to meet and finally a full blown brewery that attracts not just Star Wars fans but fans of science fiction in general.  The Borg has assimilated 10 different draft beers and 2 seasonal beers. 
 
 # Objective 
 
@@ -51,7 +51,7 @@ Last month, the talk of selling our brew to other breweries caught fire.  We sat
 
 # Breweries by State
 
-First, lets take a look at the data we have.  Keep in mind, this isn't an exhaustive list of breweries but just a sample by state. If we had an exhaustive list of breweries just imagine the decisions we;ll be able to safely make.  
+First, lets take a look at the data we have.  Keep in mind, this isn't an exhaustive list of breweries but just a sample by state. If we had an exhaustive list of breweries just imagine the decisions we'll be able to safely make.  
 
 ```{r}
 beers = read.csv('data/Beers.csv')
@@ -172,15 +172,6 @@ With any data that we obtain, we'll need to verify it's completeness and take th
 Compute the median alcohol content and international bitterness unit for each state. Plot a bar chart to compare
 
 ```{r fig.height=7, warning=FALSE}
-
-summary = data %>%
-  group_by(State) %>%
-  summarise(ABVMedian = median(ABV,na.rm=T)
-            ,IBUMedian = median(IBU,na.rm=T)
-            ) %>%
-  ungroup() 
-
-summary(summary)
 
 summary = data %>%
   group_by(State) %>%
@@ -350,7 +341,7 @@ We have a very slight positive correlation between ABV and IBU, with a coefficie
 
 # Correlation with Population
 
-Can we set our strategy based on the population of each State? Is the Market driven by number of potential customers?
+The above data could be a little misleading since larger states may have more breweries. Should we set our strategy based on the population of each State? Is the Market driven by number of potential customers?
 
 ## Breweries and Population
 
@@ -382,7 +373,7 @@ States below the trend line have the highest opportunity for Market Expansion
 
 ## Beers and Population
 
-Is there a correlation between Population and Number of Breweries in each State? Is so which State has opportunity to have more breweries based on its population?
+Is there a correlation between Population and Number of Beers in each State? Is so which State has opportunity to have more beers based on its population?
 
 ```{r}
 
