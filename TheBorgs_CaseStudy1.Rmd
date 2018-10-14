@@ -89,7 +89,7 @@ Where can we focus our research?
 
 - Top 10 States: CO, CA, MI, OR, TX, PA, MA, WA, IN, WI
 
-Where should we avoid making strong assumptions?
+Where should we avoid making strong assumptions (Note that this is an observational study and could be affected by confounding variables such as population density, urban vs. rural locations, etc.)?
 
 - Bottom 10 States: DC, ND, SD, WV, AR, DE, MS, NV, AL, KS
 
