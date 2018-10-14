@@ -10,7 +10,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
 library(DT)
 library(tidyverse)
 library(ggplot2)
@@ -41,9 +41,13 @@ states=sp::merge(states,dfStates,by='name',all.x=T)
 
 ![](./img/beerborg-big.jpg)
 
+# Background
+
 We are here because of our love for Star Trek and beer.  Who would have ever imagined we would get tired of the typical draft beer and decide to brew our on own beer.  It started out as a small group competition that resulted in us picking a few brews, purchasing a building to meet and finally a full blown brewery that attracks not just Star Wars fans but fans of science fiction in general.  The Borg has assimilated 10 different draft beers and 2 seasonal beers. 
 
-Last month, the talk of selling our brew to other breweries caught fire.  We sat around brainstorming and really getting to know where.  Way too many ideas were thrown on the table and most were not based on any research.  In an attempt to further the discussion, we (James, Max and Nikhil) decided to do some research hoping to channel our discussion around factual data to best of our knowledge.  The data we have collected contains a sample of brewries by city/state and the desired taste by state.  This will help to narrow our focus to areas where beer is seen as a necessity and a strong opinion as to the desired taste.  
+# Objective 
+
+Last month, the talk of selling our brew to other breweries caught fire.  We sat around brainstorming and really getting to know where.  Way too many ideas were thrown on the table and most were not based on any research.  In an attempt to further the discussion, we (James, Max and Nikhil) decided to do some research hoping to channel our discussion around factual data to best of our knowledge.  The data we have collected contains a sample of breweries by city/state and the desired taste by state, including correlations between ABV/IBU and between population and market size.  This will help to narrow our focus to areas where beer is seen as a necessity and a strong opinion as to the desired taste.  
 
 # Breweries by State
 
@@ -69,9 +73,9 @@ str(beers)
 str(breweries)
 ```
 
-
 ## How many breweries are present in each state?
 
+Counting the number of breweries per each State
 
 ```{r}
 breweriesState = breweries %>% count(State) # Option 2 . This is better! 
@@ -90,6 +94,8 @@ Where should we avoid making strong assumptions?
 - Bottom 10 States: DC, ND, SD, WV, AR, DE, MS, NV, AL, KS
 
 ## Map of States and Breweries 
+
+A visual chart of number of breweries by State can help to identify geographical patterns.
 
 ```{r Leaflet_Map_Count}
 #adding the count columns to the states spatial data
@@ -221,6 +227,10 @@ message("The State with the most bitter (IBU) beer is:"
 
 ## Map of States and their max ABV
 
+A visual chart of Max ABV by State can help to identify geographical patterns.
+
+Preparing the data
+
 ```{r preparing_data}
 #calculating max abv and mav ibu
 statesABV_IBU=data %>%
@@ -231,6 +241,8 @@ statesABV_IBU=data %>%
 #adding to the states map data frame
 states = sp::merge(states,statesABV_IBU,by='abb',all.x=T)
 ```
+
+Plotting the Map
 
 ```{r Leaflet_Map_ABC}
 bins <- c(0.05, 0.07, 0.09, 0.10,Inf)
@@ -266,7 +278,13 @@ leaflet(states) %>%
 
 ```
 
+States with highest ABV are Colorado, Kentucky, Indiana, New York; all with an ABV value at or above 0.100
+
+With the exception of Colorado, these states are located on the East of the country
+
 ## Map of States and their max IBU
+
+A visual chart of Max  IBU by State can help to identify geographical patterns.
 
 ```{r Leaflet_Map_IBU}
 bins <- c(30,80,100,120,Inf)
@@ -302,6 +320,10 @@ leaflet(states) %>%
 
 ```
 
+States with Maximum IBU are: Oregon, Virginia, Massachusetts, Ohio, Minnesota, Vermont; all with an IBU value at or above 120.
+
+With the exception of Oregon, these states are located on the East of the country
+
 # Summarize ABV Variable
 
 Summary statistics for the ABV variable:
@@ -326,7 +348,13 @@ model
 
 We have a very slight positive correlation between ABV and IBU, with a coefficient of `r round(model$coefficients[[2]]*100,digits=4)` of increase % Alcohol per IBU point
 
-# Breweries and Population
+# Correlation with Population
+
+Can we set our strategy based on the population of each State? Is the Market driven by number of potential customers?
+
+## Breweries and Population
+
+Is there a correlation between Population and Number of Breweries in each State? Is so which State has opportunity to have more breweries based on its population?
 
 ```{r}
 #merge Beer, Breweries and populations
@@ -348,9 +376,13 @@ ggplot(data=PopBrewery, aes(x=pop, y=count)) +
 model=lm(data=PopBrewery,formula=pop~count)
 ```
 
-We have a positive correlation between Population and number of Breweries in each Stte, with a coefficient of `r comma(model$coefficients[[2]])` people per each new Brewery
+We have a positive correlation between Population and number of Breweries in each State, with a coefficient of `r comma(model$coefficients[[2]])` people per each new Brewery
 
-# Beers and Population
+States below the trend line have the highest opportunity for Market Expansion
+
+## Beers and Population
+
+Is there a correlation between Population and Number of Breweries in each State? Is so which State has opportunity to have more breweries based on its population?
 
 ```{r}
 
@@ -371,3 +403,28 @@ model=lm(data=PopBeers,formula=pop~count)
 ```
 
 We have a positive correlation between Population and number of Beers in each State, with a coefficient of `r comma(model$coefficients[[2]])` people per each new Beer
+
+States below the trend line have the highest opportunity for Market Expansion
+
+# Summary of Findings
+
+- There is a strong competition in the East and West of the country with more than 20 breweries per State
+
+- Colorado is also a strong market with many breweries and Beers
+
+- With few exceptions, the eastern States of the country tend to have highest ABV and IBU, in the Max and Median points of the distribution.
+
+- There is a correlation between ABV and IBU (coefficient: +0.0351)
+
+- There is a strong correlation between Beers and Population, with a new Beer per each 75K people
+
+- There is a strong correlation between Breweries and Population, with a new Brewery per each 420K people
+
+# Opportunities
+
+- We see opportunities for Expansion in states like Florida, New York, Ohio, and Georgia that are below the Correlation Line between Beer, Breweries, and Population. 
+
+- Within above States, we would highlight New York and Ohio states having the strongest  ABV and IBU. This could be a good fit for our strategy
+
+
+
