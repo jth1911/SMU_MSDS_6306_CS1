@@ -176,7 +176,6 @@ summary = data %>%
 
 summary(summary)
 
-# Question: Why do we need ungroup()? The code below works just fine without ungroup()
 summary = data %>%
   group_by(State) %>%
   summarise(ABVMedian = median(ABV,na.rm=T) 
@@ -185,19 +184,6 @@ summary = data %>%
   ungroup()
   
 summary(summary)
-
-# There is an NA value. Which one is it?
-# [rowSums(is.na(summary)) > 0,]
-
-# SD has NA values for IBUMedian; need to remove before plotting
-# Why does SD have NA values even though we removed NA values when we calculated median?
-# Reason: na.rm will remove NA values before applying median function. However, if a state has all NA values 
-# for a field (for example SD has all NA value for IBU), the summarize will add a NA value for that State
-
-# no need for trim function.. we can use trimws function... I added at the top as is better to clean the data before doing the work
-# trim <- function (x) gsub("^\\s+|\\s+$", "", x)
-# data$State <- trim(data$State)
-# data[data$State == 'SD', ]
 
 ggplot(data=filter(summary,!is.na(ABVMedian))
        ,aes(x=fct_reorder(State,ABVMedian,desc=T)
@@ -283,7 +269,7 @@ leaflet(states) %>%
 ## Map of States and their max IBU
 
 ```{r Leaflet_Map_IBU}
-bins <- c(30,70,90,110,Inf)
+bins <- c(30,80,100,120,Inf)
 pal <- colorBin("YlOrRd", domain = states$MaxIBU, bins = bins)
 
 labels <- sprintf("<strong>%s</strong><br/>%g Max IBU",states$name, states$MaxIBU) %>% lapply(htmltools::HTML)
@@ -340,4 +326,48 @@ model
 
 We have a very slight positive correlation between ABV and IBU, with a coefficient of `r round(model$coefficients[[2]]*100,digits=4)` of increase % Alcohol per IBU point
 
+# Breweries and Population
 
+```{r}
+#merge Beer, Breweries and populations
+dataPop = data %>%
+  left_join(select(dfStates,abb,pop),by=c("State"="abb"))
+
+PopBrewery = dataPop %>%
+  group_by(State,pop) %>%
+  summarise(count = n_distinct(Brewery_id)) %>%
+  ungroup()  
+
+ggplot(data=PopBrewery, aes(x=pop, y=count)) +
+  geom_point() + 
+  geom_smooth(method='lm') +
+  geom_text(aes(label=State),check_overlap=T,size=2.5,hjust=-.5) + 
+  scale_x_continuous(name='Population (Thousands)',labels=function(x){comma(x,scale=1/1000)}) +
+  ylab("Count of Breweries")
+
+model=lm(data=PopBrewery,formula=pop~count)
+```
+
+We have a positive correlation between Population and number of Breweries in each Stte, with a coefficient of `r comma(model$coefficients[[2]])` people per each new Brewery
+
+# Beers and Population
+
+```{r}
+
+PopBeers = dataPop %>%
+  group_by(State,pop) %>%
+  summarise(count = n_distinct(Beer_ID)) %>%
+  ungroup()  
+
+ggplot(data=PopBeers, aes(x=pop, y=count)) +
+  geom_point() + 
+  geom_smooth(method='lm') +
+  geom_text(aes(label=State),check_overlap=T,size=2.5,hjust=-.5) + 
+  scale_x_continuous(name='Population (Thousands)',labels=function(x){comma(x,scale=1/1000)}) +
+  ylab("Count of Beers")
+
+
+model=lm(data=PopBeers,formula=pop~count)
+```
+
+We have a positive correlation between Population and number of Beers in each State, with a coefficient of `r comma(model$coefficients[[2]])` people per each new Beer
