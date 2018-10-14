@@ -30,6 +30,16 @@ Follow data sources have been used:
 
 - **us-states.json** spatial dataset contains coordinates and geographical shape of the US States.
 
+## Analysis 
+
+The full analysis has been created using R and Markdown. 
+
+- The Source file is [TheBorgs_CaseStudy1.RMD](https://github.com/jth1911/SMU_MSDS_6306_CS1/blob/master/TheBorgs_CaseStudy1.Rmd)
+
+- The Output file is [TheBorgs_CaseStudy1.html](https://github.com/jth1911/SMU_MSDS_6306_CS1/blob/master/TheBorgs_CaseStudy1.html)
+
+- The GitHub Repository is https://github.com/jth1911/SMU_MSDS_6306_CS1 
+
 ## Summary of Findings
 
 - There is a strong competition in the East and West of the country with more than 20 breweries per State

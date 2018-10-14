@@ -149,10 +149,19 @@ $(document).ready(function () {
 <h2>Data Sources</h2>
 <p>Follow data sources have been used:</p>
 <ul>
-<li><p><em>Beers.csv</em> dataset contains a list of 2410 US craft beers.</p></li>
-<li><p><em>Breweries.csv</em> dataset contains a list of 558 US Breweries</p></li>
-<li><p><em>census.csv</em> dataset from census.gov with estimated 2017 population count per each US State</p></li>
-<li><p><em>us-states.json</em> spatial dataset contains coordinates and geographical shape of the US States.</p></li>
+<li><p><strong>Beers.csv</strong> dataset contains a list of 2410 US craft beers.</p></li>
+<li><p><strong>Breweries.csv</strong> dataset contains a list of 558 US Breweries</p></li>
+<li><p><strong>census.csv</strong> dataset from census.gov with estimated 2017 population count per each US State</p></li>
+<li><p><strong>us-states.json</strong> spatial dataset contains coordinates and geographical shape of the US States.</p></li>
+</ul>
+</div>
+<div id="analysis" class="section level2">
+<h2>Analysis</h2>
+<p>Analysis has been created using R and Markdown.</p>
+<ul>
+<li><p>The Source file is <a href="https://github.com/jth1911/SMU_MSDS_6306_CS1/blob/master/TheBorgs_CaseStudy1.Rmd">TheBorgs_CaseStudy1.RMD</a></p></li>
+<li><p>The Output file is <a href="https://github.com/jth1911/SMU_MSDS_6306_CS1/blob/master/TheBorgs_CaseStudy1.html">TheBorgs_CaseStudy1.html</a></p></li>
+<li><p>The Full analysis is</p></li>
 </ul>
 </div>
 <div id="summary-of-findings" class="section level2">
@@ -162,6 +171,15 @@ $(document).ready(function () {
 <li><p>Colorado is also a strong market with many breweries</p></li>
 <li><p>With few exeptions, the eastern States of the country tend to have highest ABV and IBU, in the Max and Median points of the distribution.</p></li>
 <li><p>There is a correlation between ABV and IBU (coefficient: +0.0351)</p></li>
+<li><p>There is a strong correlation between Beers and Population, with a new Beer per each 75K people</p></li>
+<li><p>There is a strong correlation between Breweries and Population, with a new Brewery per each 420K people</p></li>
+</ul>
+</div>
+<div id="potential-opporunities" class="section level2">
+<h2>Potential Opporunities</h2>
+<ul>
+<li><p>We see opportunities for Expansion in states like Florida, New York, Ohio, and Georgia that are below the Correlation Line between Beer, Breweries, and Population.</p></li>
+<li><p>Within above States, we would highlight New York and Ohio states having the strongest ABV and IBU. This could be a good fit for our strategy</p></li>
 </ul>
 </div>
 
