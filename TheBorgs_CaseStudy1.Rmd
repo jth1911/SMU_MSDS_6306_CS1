@@ -31,6 +31,8 @@ census = read.csv('data/census.csv')
 dfStates=data.frame(name=state.name,abb=state.abb) %>%
   left_join(select(census,name=NAME,pop=POPESTIMATE2017),by='name')
 
+#json file from:https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json
+
 #getting states maps
 states <- geojsonio::geojson_read("data/us-states.json", what = "sp")
 
