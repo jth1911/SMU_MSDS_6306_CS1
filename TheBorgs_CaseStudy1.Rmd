@@ -43,6 +43,8 @@ states=sp::merge(states,dfStates,by='name',all.x=T)
 
 ![](./img/beerborg-big.jpg)
 
+GitHub Repository: [https://github.com/jth1911/SMU_MSDS_6306_CS1]
+
 # Background
 
 The BeerBorg.com is a Beer company that combines the  love for Star Trek and beer.  Who would have ever imagined someone would get tired of the typical draft beer and decide to brew our on own beer.  It started out as a small group competition that resulted in picking a few brews, purchasing a building to meet and finally a full blown brewery that attracts not just Star Wars fans but fans of science fiction in general.  The Borg has assimilated 10 different draft beers and 2 seasonal beers. 
