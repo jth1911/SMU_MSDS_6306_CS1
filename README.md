@@ -48,20 +48,23 @@ The full analysis has been created using R and Markdown.
 
 - There is a strong competition in the East and West of the country with more than 20 breweries per State
 
-- Colorado is also a strong market with many breweries
+- Colorado is also a strong market with many breweries and Beers
 
-- With few exeptions, the eastern States of the country tend to have highest ABV and IBU, in the Max and Median points of the distribution.
+- With few exceptions, the eastern States of the country tend to have highest ABV and IBU, in the Max and Median points of the distribution.
 
-- There is a correlation between ABV and IBU (coefficient: +0.0351)
+- There is a correlation of 0.67 between ABV and IBU.
 
-- There is a strong correlation between Beers and Population, with a new Beer per each 75K people
+- There is a correlation of 0.61 between Beers and Population, with 75K people per beer
 
-- There is a strong correlation between Breweries and Population, with a new Brewery per each 420K people
+- There is a correlation of 0.55 between Breweries and Population, with 420K people per brewery
 
-# Potential Opportunities
 
-- We see opportunities for Expansion in states like Florida, New York, Ohio, and Georgia that are below the Correlation Line between Beer, Breweries, and Population. 
+# Opportunities
 
-- Within above States, we would highlight New York and Ohio states having the strongest  ABV and IBU. This could be a good fit for our strategy
- 
+- We see opportunities for Expansion in states like Florida, New York, Ohio, and Virginia that are below the Correlation Line between Beer, Breweries, and Population. 
+
+- At the same time, there are a group of states that are outliers in the number of beers and breweries per population (Colorado, Indiana, Minnesota, etc.). We would suggest to gather more data on these states to see the reason of such difference and seek if there is any opportunity for market growth.
+
+- States that are way below the line need also more analysis. They can be a great opportunity, but can have a greater reason for cultural, political, or religious reason.
+
 
